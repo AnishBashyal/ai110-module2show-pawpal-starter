@@ -72,19 +72,36 @@ Sam has 90 minutes today. Tasks are picked by priority (high first), then by tim
 
 ## 🧪 Testing PawPal+
 
+Run the tests with:
+
 ```bash
-# Run the full test suite:
-pytest
-
-# Run with coverage:
-pytest --cov
+python -m pytest
 ```
 
-Sample test output:
+My 27 tests check the main things the scheduler must do:
+
+- **Sorting:** tasks come out in clock order, tasks with no time go last, an empty list works, and the original list is not changed.
+- **Recurring tasks:** a daily task makes a new one for tomorrow, a weekly one for 7 days later, and a "once" task makes nothing. I also test Jan 31 going to Feb 1, and that the new copy is a separate task.
+- **Conflicts:** same time, overlapping, and one task inside another all give a warning. Back-to-back tasks, tasks with no time, and bad times like "8am" give no warning and no crash.
+- **Plan:** high priority goes first, a task that exactly fits is added, a big task is skipped but a small one after it still fits, and a pet with no tasks or 0 minutes gives an empty plan.
+- **Filtering and explain:** filter by pet and by done status, and the explanation says which tasks were added or skipped.
+
+Test output:
 
 ```
-# Paste your pytest output here
+============================= test session starts ==============================
+platform darwin -- Python 3.14.7, pytest-9.1.1, pluggy-1.6.0
+rootdir: /Users/anishbashyal/Desktop/CodePath/ai110-module2show-pawpal-starter
+collected 27 items
+
+tests/test_pawpal.py ...........................                         [100%]
+
+============================== 27 passed in 0.01s ==============================
 ```
+
+**Confidence Level: ★★★★☆ (4 out of 5)**
+
+All 27 tests pass, and they cover the happy paths and the edge cases I could think of. I am not giving 5 stars because the tests do not check the Streamlit UI, and the plan does not move tasks to fix conflicts, it only warns.
 
 ## 📐 Smarter Scheduling
 

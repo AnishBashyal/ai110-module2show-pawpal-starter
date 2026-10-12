@@ -126,13 +126,14 @@ class Scheduler:
     def find_conflicts(self, tasks: List[Task]) -> List[str]:
         """Check every pair of timed tasks and warn about the ones that overlap.
 
-        Tasks with no preferred time are ignored. Back-to-back tasks (one ends
+        Tasks with no preferred time (or an invalid one) are ignored. Back-to-back tasks (one ends
         when the next starts) are not a conflict. Same pet or different pets both
         count. Returns a list of warning strings, empty if there are no conflicts.
         It never raises, so the program keeps running.
         """
-        # only tasks with a preferred time have a fixed slot
-        timed = [t for t in tasks if t.time]
+        # only tasks with a valid preferred time have a fixed slot
+        # (a bad time like "8am" is ignored instead of crashing)
+        timed = [t for t in tasks if t.time and self._is_valid_time(t.time)]
         warnings = []
         for a, b in combinations(timed, 2):  # every pair once
             a_start = self._minutes(a.time)
@@ -145,6 +146,15 @@ class Scheduler:
                     f"{b.title} ({b.pet_name}, {b.time}) - {who}."
                 )
         return warnings
+
+    @staticmethod
+    def _is_valid_time(hhmm: str) -> bool:
+        """True if the text looks like a real "HH:MM" time."""
+        try:
+            datetime.strptime(hhmm, "%H:%M")
+            return True
+        except ValueError:
+            return False
 
     @staticmethod
     def _minutes(hhmm: str) -> int:

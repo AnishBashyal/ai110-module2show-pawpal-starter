@@ -6,6 +6,9 @@ from typing import List
 # lower number = more important, so we can sort tasks with it
 PRIORITY_ORDER = {"high": 1, "medium": 2, "low": 3}
 
+# colored dots to show priority in the CLI and the app
+PRIORITY_ICON = {"high": "🔴", "medium": "🟡", "low": "🟢"}
+
 
 @dataclass
 class Task:

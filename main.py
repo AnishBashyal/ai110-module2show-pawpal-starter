@@ -1,6 +1,6 @@
 from datetime import date, datetime, timedelta
 
-from pawpal_system import Owner, Pet, Task, Scheduler
+from pawpal_system import PRIORITY_ICON, Owner, Pet, Task, Scheduler
 
 
 def main():
@@ -26,26 +26,27 @@ def main():
     print("-" * 56)
     for start, task in plan["scheduled"]:
         end = (datetime.strptime(start, "%H:%M") + timedelta(minutes=task.duration)).strftime("%H:%M")
-        print(f"{start}-{end}  {task.title:<18}{task.pet_name:<10}{task.priority:<8}")
+        print(f"{start}-{end}  {task.title:<18}{task.pet_name:<10}{PRIORITY_ICON[task.priority]} {task.priority}")
     print("-" * 56)
     print(f"Total: {plan['minutes_used']} of {owner.available_minutes} min")
 
     if plan["skipped"]:
         print("\nSkipped (not enough time):")
         for task in plan["skipped"]:
-            print(f"  - {task.title} ({task.duration} min, {task.priority})")
+            print(f"  - {task.title} ({task.duration} min, {PRIORITY_ICON[task.priority]} {task.priority})")
 
     print("\nWhy this plan:")
     print(scheduler.explain_plan(plan))
 
     show_sorting_and_filtering(owner, scheduler)
     show_conflicts(owner, scheduler)
+    show_priority_demo()
 
 
 def show_tasks(label, tasks):
     print(f"\n{label}")
     for t in tasks:
-        status = "done" if t.completed else "todo"
+        status = "✅ done" if t.completed else "⬜ todo"
         print(f"  {t.time or '--:--'}  {t.title:<16}{t.pet_name:<9}{status}")
     if not tasks:
         print("  (none)")
@@ -87,6 +88,27 @@ def show_conflicts(owner, scheduler):
             print(w)
     else:
         print("No conflicts found.")
+
+
+def show_priority_demo():
+    """Demo: priority beats length and time, and a low task is skipped when time runs out."""
+    print("\n" + "=" * 56)
+    print("Priority scheduling demo (30 minutes available)")
+
+    owner = Owner(name="Alex", available_minutes=30)
+    rex = Pet(name="Rex", species="dog")
+    owner.add_pet(rex)
+    rex.add_task(Task("Quick cuddle", 5, "low", time="08:00"))
+    rex.add_task(Task("Brush teeth", 10, "medium", time="08:00"))
+    rex.add_task(Task("Long walk", 25, "high", time="18:00"))
+
+    scheduler = Scheduler(owner)
+    plan = scheduler.generate_plan()
+    for start, task in plan["scheduled"]:
+        print(f"  {start}  {task.title:<14}{PRIORITY_ICON[task.priority]} {task.priority}")
+    for task in plan["skipped"]:
+        print(f"  skipped: {task.title:<14}{PRIORITY_ICON[task.priority]} {task.priority}")
+    print(f"Total: {plan['minutes_used']} of {owner.available_minutes} min")
 
 
 if __name__ == "__main__":

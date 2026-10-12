@@ -2,6 +2,10 @@ from dataclasses import dataclass, field
 from typing import List, Optional
 
 
+# lower number = more important, so we can sort tasks with it
+PRIORITY_ORDER = {"high": 1, "medium": 2, "low": 3}
+
+
 @dataclass
 class Task:
     title: str
@@ -38,5 +42,5 @@ class Scheduler:
     def generate_plan(self) -> dict:
         pass
 
-    def explain_plan(self) -> str:
+    def explain_plan(self, plan: dict) -> str:
         pass

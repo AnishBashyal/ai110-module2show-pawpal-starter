@@ -25,13 +25,24 @@ Main objects I think the system needs:
   - Attributes: the owner (and through the owner, the pet and tasks), start time of the day
   - Methods: make the daily plan (returns the scheduled tasks with times, the skipped tasks, and the reasoning), explain why it chose them
 
-- Briefly describe your initial UML design.
-- What classes did you include, and what responsibilities did you assign to each?
+My UML has four classes. I tried to keep it simple and only add what the README needs.
+
+- **Owner** keeps the basic info about the person: name, how many minutes they have each day, and their preferences. It also holds the pet. It does not do any work, it is just the place where the owner info lives.
+- **Pet** keeps the pet's name and species, and the list of tasks for that pet. Its job is to hold the tasks and let us add a new one.
+- **Task** is one care activity, like a walk or feeding. It has a title, a duration, and a priority. Its job is to store that info and let the user edit it later.
+- **Scheduler** is the one that does the thinking. It takes the owner (and gets the pet and tasks from there) and makes the daily plan using the time available and the priorities. It also explains why it chose those tasks, and which ones it skipped.
+
+I put the logic only in Scheduler so the other classes stay simple and easy to understand.
 
 **b. Design changes**
 
 - Did your design change during implementation?
 - If yes, describe at least one change and why you made it.
+
+Yes, my design changed a little after I looked at it again. I made two small changes:
+
+- **explain_plan() now takes the plan.** At first it took nothing, but then it would not know which plan to explain. Now I pass the plan from generate_plan() into it, so it does not need to remember anything.
+- **I added a priority order.** Priority is a word like "high" or "low", and if I sort the words normally "high" comes before "low" but "medium" would be in the wrong place. So I added a small map (high = 1, medium = 2, low = 3) that the Scheduler can use to sort tasks correctly.
 
 ---
 

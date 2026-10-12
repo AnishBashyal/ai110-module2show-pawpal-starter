@@ -2,7 +2,28 @@
 
 ## 1. System Design
 
+**Core user actions**
+
+- Enter owner and pet info, including how much time the owner has available each day.
+- Add and edit care tasks (walks, feeding, meds, grooming), each with a duration and priority.
+- Generate and view today's plan, with an explanation of why tasks were chosen and ordered that way.
+
 **a. Initial design**
+
+Main objects I think the system needs:
+
+- **Owner**
+  - Attributes: name, time available per day, preferences, pet
+  - Methods: none for now, it just holds the info
+- **Pet**
+  - Attributes: name, species, list of tasks
+  - Methods: add a task
+- **Task**
+  - Attributes: title, duration, priority
+  - Methods: edit the task
+- **Scheduler**
+  - Attributes: the owner (and through the owner, the pet and tasks), start time of the day
+  - Methods: make the daily plan (returns the scheduled tasks with times, the skipped tasks, and the reasoning), explain why it chose them
 
 - Briefly describe your initial UML design.
 - What classes did you include, and what responsibilities did you assign to each?

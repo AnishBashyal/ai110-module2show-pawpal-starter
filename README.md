@@ -88,14 +88,22 @@ Sample test output:
 
 ## 📐 Smarter Scheduling
 
-> Fill in once you've implemented scheduling logic.
+| Feature            | Method(s)                                                | Notes                                                     |
+| ------------------ | -------------------------------------------------------- | --------------------------------------------------------- |
+| Sorting by time    | `Scheduler.sort_by_time()`                               | "HH:MM" text sorts in clock order, tasks with no time last |
+| Filtering          | `Owner.filter_tasks()`                                   | by pet name and/or done status                            |
+| Recurring tasks    | `Task.mark_complete()`, `Pet.complete_task()`            | daily = +1 day, weekly = +7 days, "once" does not repeat  |
+| Conflict detection | `Scheduler.find_conflicts()`                             | warns about overlapping tasks, never crashes              |
 
-| Feature           | Method(s) | Notes                             |
-| ----------------- | --------- | --------------------------------- |
-| Task sorting      |           | e.g., by priority, duration       |
-| Filtering         |           | e.g., skip tasks if time runs out |
-| Conflict handling |           | e.g., overlapping time slots      |
-| Recurring tasks   |           | e.g., daily vs. weekly            |
+**Sorting.** `Scheduler.sort_by_time(tasks)` uses `sorted()` with a lambda key: `(t.time == "", t.time)`. Zero-padded "HH:MM" strings already sort in clock order. The `t.time == ""` part pushes tasks with no time to the end. It returns a new list. The plan itself (`generate_plan`) is still ordered by priority first, using `get_pending_tasks()`.
+
+**Filtering.** `Owner.filter_tasks(pet_name=None, completed=None)` keeps only the tasks that match. `None` means "don't filter on this", so you can filter by pet, by status, or both. This works because `Pet.add_task()` saves the pet's name on every task (`task.pet_name`).
+
+**Recurring tasks.** Each task has a `frequency` ("once", "daily", "weekly") and a `due_date`. When you call `Pet.complete_task(task)`, it runs `Task.mark_complete()`, which marks the task done and returns a new copy. The copy's due date is today + 1 day (daily) or today + 7 days (weekly), worked out with `timedelta`. "once" tasks return nothing. `Scheduler.get_pending_tasks()` skips tasks due in the future, so tomorrow's copy does not show up in today's plan.
+
+**Conflict detection.** `Scheduler.find_conflicts(tasks)` looks at every pair of tasks that have a preferred time. Two tasks overlap if each one starts before the other ends. Back-to-back tasks are fine. It returns a list of warning messages (empty if none), says whether the clash is the same pet or different pets, and never raises an error.
+
+Tradeoff: conflicts are checked on the times the owner asked for. `generate_plan()` does not move tasks around to fix them. See `reflection.md` section 2b.
 
 ## 📸 Demo Walkthrough
 

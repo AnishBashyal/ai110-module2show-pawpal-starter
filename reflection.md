@@ -58,6 +58,14 @@ Yes, my design changed a little after I looked at it again. I made two small cha
 - Describe one tradeoff your scheduler makes.
 - Why is that tradeoff reasonable for this scenario?
 
+My conflict check (find_conflicts) only looks at the times the owner asked for, and it only warns. It does not move anything. generate_plan still stacks the tasks one after another from the start time, so the warnings are about what the owner typed in, not about the final plan.
+
+I also check every pair of tasks instead of sorting first and only checking neighbors. The sorted way is faster, but I found it can miss a case: a long task from 08:00 to 10:00 can overlap a task at 09:00 even when a short task at 08:30 sits between them. Checking every pair is slower on paper, but a pet owner has maybe 10 tasks a day, so it does not matter.
+
+When I looked at how to simplify it, I thought about two versions. The first one uses `itertools.combinations` instead of the nested loop with `timed[i + 1:]`. I kept that one, because it reads like plain English ("every pair") and it removed the slicing. The second one sorts the tasks and does the whole check in one list comprehension. I did not use that one. It is shorter, but I had to stop and think to see what it does, and it is the same version that could miss overlaps.
+
+This is reasonable here because a warning is enough for the owner to fix the times, and a simple check that is always right is better than a clever one that is sometimes wrong.
+
 ---
 
 ## 3. AI Collaboration

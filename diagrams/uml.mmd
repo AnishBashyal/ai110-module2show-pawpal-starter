@@ -3,7 +3,9 @@ classDiagram
         +str name
         +int available_minutes
         +str preferences
-        +Pet pet
+        +list~Pet~ pets
+        +add_pet(pet)
+        +get_all_tasks() list
     }
 
     class Pet {
@@ -17,17 +19,22 @@ classDiagram
         +str title
         +int duration
         +str priority
+        +str time
+        +str frequency
+        +bool completed
         +edit(title, duration, priority)
+        +mark_complete()
     }
 
     class Scheduler {
         +Owner owner
         +str start_time
+        +get_pending_tasks() list
         +generate_plan() dict
         +explain_plan(plan) str
     }
 
-    Owner "1" --> "1" Pet : has
+    Owner "1" --> "*" Pet : has
     Pet "1" --> "*" Task : has
     Scheduler --> Owner : uses
     Scheduler ..> Task : schedules

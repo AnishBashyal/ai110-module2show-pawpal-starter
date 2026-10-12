@@ -44,14 +44,30 @@ pip install -r requirements.txt
 
 ## 🖥️ Sample Output
 
-Paste a sample of your app's CLI or Streamlit output here so a reader can see what a generated plan looks like:
+Output from running `python main.py`:
 
 ```
-# e.g.:
-# Daily plan for Biscuit (Golden Retriever):
-#   08:00 — Morning walk (30 min) [priority: high]
-#   09:00 — Feeding (10 min) [priority: high]
-#   ...
+Today's Schedule for Sam
+========================================================
+Time         Task              Pet       Priority
+--------------------------------------------------------
+08:00-08:10  Feeding           Mochi     high
+08:10-08:40  Morning walk      Biscuit   high
+08:40-08:45  Give medicine     Mochi     high
+08:45-09:05  Play with toys    Mochi     medium
+--------------------------------------------------------
+Total: 65 of 90 min
+
+Skipped (not enough time):
+  - Grooming (40 min, low)
+
+Why this plan:
+Sam has 90 minutes today. Tasks are picked by priority (high first), then by time and length.
+- 08:00: Feeding (10 min, high) was added.
+- 08:10: Morning walk (30 min, high) was added.
+- 08:40: Give medicine (5 min, high) was added.
+- 08:45: Play with toys (20 min, medium) was added.
+- Grooming (40 min, low) was skipped, not enough time left.
 ```
 
 ## 🧪 Testing PawPal+
@@ -74,12 +90,12 @@ Sample test output:
 
 > Fill in once you've implemented scheduling logic.
 
-| Feature | Method(s) | Notes |
-|---------|-----------|-------|
-| Task sorting | | e.g., by priority, duration |
-| Filtering | | e.g., skip tasks if time runs out |
-| Conflict handling | | e.g., overlapping time slots |
-| Recurring tasks | | e.g., daily vs. weekly |
+| Feature           | Method(s) | Notes                             |
+| ----------------- | --------- | --------------------------------- |
+| Task sorting      |           | e.g., by priority, duration       |
+| Filtering         |           | e.g., skip tasks if time runs out |
+| Conflict handling |           | e.g., overlapping time slots      |
+| Recurring tasks   |           | e.g., daily vs. weekly            |
 
 ## 📸 Demo Walkthrough
 
@@ -91,4 +107,4 @@ Describe your app in numbered steps so a reader can follow along without watchin
 4. <!-- Describe this step -->
 5. <!-- Add more steps as needed -->
 
-**Screenshot or video** *(optional)*: <!-- Insert a screenshot or link to a demo video here -->
+**Screenshot or video** _(optional)_: <!-- Insert a screenshot or link to a demo video here -->
